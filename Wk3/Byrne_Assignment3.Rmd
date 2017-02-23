@@ -1,0 +1,31 @@
+---
+title: "Data 604 - Week 3"
+author: "Liam Byrne"
+date: "February 21, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 3.5 Problems
+
+*For reference, please consult the attached Excel workbook*
+
+#### 1.a.) Instead of 50 throws, try 500 throws and compare the results.
+
+Prior to the addition of the additional 450 rolls, the "Mean.Sum" was 7.16, with the additional rolls the "Mean.Sum" is 6.9720. This value is approaching the expected value of 7. WIth a large enough finite set of rolls, the value should merge to 7.
+
+#### 1.b) Load the dice. [... discuss]
+
+In order to increase the odds of rolling an 11 (assuming loaded crap dice), the probabilities for 1 to 4 (each) were set to 1/64. 5 and 6 were set to 30/64. The "Mean.Sum" of the 500 rolls is 10.6480. This could be carried out further by decreasing the probabilites of 1 to 4 to nearly 0 and set 5 and 6 to something close to 0.5 (each); of which the expected value would be 11.
+
+#### 1.c) Run MC Simulaiton with @RISK Excel add-in for 10000 simulaitons and compare results to theory.
+
+From the output graph, the data is very close to theory, but they are not symmetrical about the mean of 7 as far as their probability.
+
+#### 5) Produce a confidence interval of 95% and 90% for the MC integration estimate and see if it "catches" the exact value.
+
+From the output, both intervals "catch" the exact value. The estimate, to begin with, for this simulation is very close to the real value. After a few simulations, the MC estimated value remains relatively unchanged and the intervals always catches the exact value.
+
