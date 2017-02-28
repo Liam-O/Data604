@@ -1,0 +1,99 @@
+---
+title: "Data 604 - Week 4"
+author: "Liam Byrne"
+date: "February 26, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options(digits = 4)
+```
+
+#### Create a M/D/1 model for a service time distribution that is degerate and compare it to a distribution with some variaiton.
+
+Since the distribution will only give a signle value, the standard deviaiton $\sigma$ is 0. Therefore:
+
+*Eq.1*
+$$W_q = \frac{\lambda(\sigma^2+1/\mu^2)}{2(1-\lambda/\mu)} \rightarrow \frac{\lambda/\mu^2}{2(1-\lambda/\mu)} = \frac{\lambda}{2\mu(\mu-\lambda)}$$
+
+
+So, using a M/D/1 model:
+
+* $\rho = \lambda/\mu$
+    + For steady-state, $\rho < 1$
+* $L_q = \lambda W_q$
+    + Using *Eq.1*, $L_q = \frac{\lambda^2}{2\mu(\mu - \lambda)}$
+* $W = W_q + 1/\mu$
+    + Using *Eq.1*, $W = \frac{\lambda}{2\mu(\mu-\lambda)} + \frac{1}{\mu} = \frac{2\mu-\lambda}{2\mu(\mu - \lambda)}$
+* $L = \lambda(W_q + 1/\mu)$
+    + Using *Eq.1*, $L = \frac{\lambda^2}{2\mu(\mu-\lambda)} + \frac{\lambda}{\mu} = \frac{2\lambda \mu-\lambda^2}{2\mu(\mu-\lambda)}$
+
+    
+For a M/M/1 distribution with $\lambda$ and $\mu$ being the same form the M/D/1 model.
+
+* $\rho = \lambda/\mu$
+    + For steady-state, $\rho < 1$
+* $L = \frac{\lambda}{\mu-\lambda} \rightarrow$ *Eq.2*
+* $W_q = L/\lambda - \frac{1}{\mu}$
+    + Using *Eq.2*, $W_q = \frac{1}{\mu-\lambda} - \frac{1}{\mu} = \frac{\lambda}{\mu(\mu-\lambda)}\rightarrow$ *Eq.3*
+* $W = W_q + \frac{1}{\mu}$
+    + Using *Eq.3*, $W = \frac{1}{\mu-\lambda}$
+* $L_q = \lambda W_q$
+    + Using *Eq.3*, $L_q = \frac{\lambda}{\mu-\lambda} - \frac{\lambda}{\mu} = \frac{\lambda \mu - \lambda(\mu - \lambda)}{\mu(\mu-\lambda)} = \frac{\lambda^2}{\mu(\mu-\lambda)}$
+
+Comparing the M/D/1 and M/M/1 models:
+
+* $L_q$ and $W_q$ of the M/D/1 model is half that of the M/M/1 model.
+* $L$ and $W$ of the M/D/1 model is samller by a factor of $\frac{2\mu - \lambda}{2\mu} \rightarrow 1 - \rho/2$ relative to the M/M/1 model.
+    + Since $0 < \rho <1$, L and W will be smaller by a factor between (not inculding) 1 and 0.5
+    
+This is a very unusual conclusion. With the steady state utilizaiton $\rho$ remaining constant accross both models. The M/D/1 model has half the average queue time and half the average queue length when compared to the M/M/1 model. In addiiton the average time and length in the system is at least as short as and maybe almost up to half as short as the M/M/1 system.
+
+#### Using the model created above (with $\lambda = 1/$minute$ and $\mu = 1/0.9$ per minute), test the theory with a simulaiton in Simio and discuss the process and results.Create a M/D/1 model for a service time distribution that is degerate and compare it to a distribution with some variaiton.
+
+* Glabal (M/D/1 & M/M/1) method:
+    + Warmup period of 10 hours.
+    + Simulaiton is ran for 12 weeks.
+    + The simulaiton is replicated 10 times for each case.
+    + For the arrival time, $1/\lambda$, the distribution is set `Random.Exponential(1)`.
+
+* Designing M/D/1 in Simio:
+    + For the service time, $1/\mu$, since it is degenerate/constant, the distribution was set to discrete with a cummilative propbability of one occurance for the service time, 0.9 minutes. THis was aacomplished by `Random.discrete(0.9,1)`.
+
+* Designing M/M/1 in Simio:
+    + For the service time, , $1/\mu$, the distribution was set to exponential distribution for 0.9 minutes. This was aacomplished by `Random.exponential(0.9)`.
+    
+**Running the M/D/1  Simio model:**
+
+Using the process described above, the following results were produced:
+
+<!-- Insert hyper link here -->
+
+
+
+```{r}
+c_names <- c("MetricEstimated", "Queueing", "Simulaiton", "Halfwidth")
+r_names <- c("Utilizaiton (p)", "Number in System (L)", "Number in queue (Lq)",
+             "Time in system (W)", "Time in queue (Wq)")
+l <- 1
+m <- 1/0.9
+
+md1 <- data.frame(matrix(NA, nrow = length(r_names), ncol = length(c_names)))
+
+names(md1) <- c_names
+md1$MetricEstimated <- r_names
+md1$Queueing <- c(l/m, (2*m*l-l^2)/(2*m*(m-l)), l^2/(2*m*(m-l)),
+                 (2*m-l)/(2*m*(m-l)), l/(2*m*(m-l)))
+md1$Simulaiton <-  c(0.9007, 4.9713, 4.0408, 4.9671, 4.0373)
+md1$Halfwidth <- c(0.2447, 0.1355, 0.1334, 0.1244, 0.1244)
+
+mm1 <- data.frame(matrix(NA, nrow = length(r_names), ncol = length(c_names)))
+
+names(mdm) <- c_names
+mm1$MetricEstimated <- r_names
+mm1$Queueing <- c(l/m, l/(m-l), (l^2)/(m*(m-l)), 1/(m-l), l/(m*(m-l)))
+mm1$Simulaiton <-  c(0.8977, 8.9315, 8.012, 8.9410, 8.004
+mm1$Halfwidth <- c(
+```
+
